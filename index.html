@@ -26,7 +26,7 @@
       </a>
       <nav class="header-actions" aria-label="Primary navigation">
         <a class="header-switch" href="/sponsors/" aria-label="Explore Offscreen for sponsors"><span>For sponsors</span><i aria-hidden="true">↗</i></a>
-        <a class="button button-small button-light" href="#join">Join early access</a>
+        <a class="button button-small button-light" href="#join" data-open-modal>Join early access</a>
       </nav>
     </header>
 
@@ -41,7 +41,7 @@
           <span>No endless feed.</span>
         </div>
         <p class="hero-detail reveal">Just choose what you're working on, start focusing, and put your phone away.</p>
-        <a class="button button-primary reveal" href="#join">Join early access <span aria-hidden="true">↗</span></a>
+        <a class="button button-primary reveal" href="#join" data-open-modal>Join early access <span aria-hidden="true">↗</span></a>
         <p class="micro reveal">We're building the first version now.<br />Early members will help shape it.</p>
 
         <div class="session-stage reveal" aria-label="Example Offscreen session">
@@ -184,17 +184,49 @@
       <span class="copyright">© 2026 Offscreen</span>
     </footer>
 
-    <dialog class="join-modal" aria-labelledby="modal-title">
+    <dialog class="join-modal" aria-labelledby="modal-title" aria-describedby="modal-description">
       <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
       <div class="modal-icon" aria-hidden="true"><span></span></div>
-      <h2 id="modal-title">Focus first.</h2>
-      <p>Be among the first to try sponsor-funded focus sessions and help shape the product.</p>
-      <form id="early-access-form">
-        <label for="email">Email address</label>
-        <div class="input-row"><input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required /><button type="submit">Join the list</button></div>
-        <p class="form-note">No spam. Just meaningful product updates.</p>
-      </form>
-      <div class="form-success" hidden><span>✓</span><h3>You're on the list.</h3><p>We'll be in touch when early access opens.</p></div>
+      <div class="signup-state" data-signup-state>
+        <h2 id="modal-title">Get Offscreen early.</h2>
+        <p id="modal-description">Be one of the first people to get rewarded for putting your phone down.</p>
+        <form id="early-access-form" novalidate>
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" inputmode="email" placeholder="you@email.com" autocomplete="email" aria-describedby="email-error" required />
+            <p class="field-error" id="email-error" data-email-error aria-live="polite"></p>
+          </div>
+          <fieldset class="focus-fieldset" aria-describedby="category-error">
+            <legend>What do you usually focus on?</legend>
+            <div class="focus-options">
+              <label><input type="radio" name="focus_category" value="coding" required /><span>Coding</span></label>
+              <label><input type="radio" name="focus_category" value="studying" /><span>Studying</span></label>
+              <label><input type="radio" name="focus_category" value="writing" /><span>Writing</span></label>
+              <label><input type="radio" name="focus_category" value="reading" /><span>Reading</span></label>
+              <label><input type="radio" name="focus_category" value="other" /><span>Other</span></label>
+            </div>
+            <p class="field-error" id="category-error" data-category-error aria-live="polite"></p>
+          </fieldset>
+          <p class="submit-error" data-submit-error role="alert"></p>
+          <button class="signup-submit" type="submit" disabled><span>Join early access</span><i aria-hidden="true">↗</i></button>
+          <p class="form-note">No spam. We’ll email you when your spot is ready.</p>
+        </form>
+      </div>
+      <div class="form-success" data-success-state hidden>
+        <span class="success-mark" aria-hidden="true">✓</span>
+        <h2 id="success-title" data-success-title>You’re in.</h2>
+        <p>We’ll let you know when Offscreen is ready for you.</p>
+        <div class="alpha-invite" data-alpha-invite>
+          <h3>Want to help shape Offscreen?</h3>
+          <p>I’m looking for a small group of people to test the first version and give honest feedback.</p>
+          <div class="alpha-actions">
+            <button type="button" class="alpha-primary" data-alpha-interest>I’d test it</button>
+            <button type="button" class="alpha-later" data-alpha-later>Maybe later</button>
+          </div>
+          <p class="submit-error" data-alpha-error role="alert"></p>
+        </div>
+        <p class="alpha-confirmation" data-alpha-confirmation tabindex="-1" hidden>Perfect — we’ll reach out when the first build is ready.</p>
+      </div>
     </dialog>
 
     <script type="module" src="/script.js"></script>
