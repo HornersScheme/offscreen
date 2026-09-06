@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { getAttribution, trackEvent } from '../analytics.js';
 
 const modal = document.querySelector('.pilot-modal');
 const form = document.querySelector('#pilot-form');
@@ -16,42 +17,24 @@ const supabase = supabaseUrl && supabaseKey
 
 let activeTrigger = null;
 let isSubmitting = false;
+let contactStarted = false;
+let formStarted = false;
 
-function normalizeAttributionValue(value) {
-  return value?.trim().toLowerCase().slice(0, 100) || null;
-}
-
-function getAttribution() {
-  const params = new URLSearchParams(window.location.search);
-  let source = normalizeAttributionValue(params.get('utm_source'));
-
-  if (!source && document.referrer) {
-    try {
-      const referrer = new URL(document.referrer);
-      source = referrer.hostname === window.location.hostname
-        ? 'direct'
-        : referrer.hostname.replace(/^www\./, '').slice(0, 100);
-    } catch {
-      source = 'direct';
-    }
-  }
-
-  return {
-    source: source || 'direct',
-    utm_medium: normalizeAttributionValue(params.get('utm_medium')),
-    utm_campaign: normalizeAttributionValue(params.get('utm_campaign')),
-  };
-}
-
-function trackEvent(name, properties = {}) {
-  window.dispatchEvent(new CustomEvent('offscreen:analytics', { detail: { name, properties } }));
-  console.debug(`[Offscreen event] ${name}`, properties);
-}
+trackEvent('sponsor_page_viewed', getAttribution());
 
 document.querySelectorAll('[data-open-pilot]').forEach((button) => {
   button.addEventListener('click', () => {
     activeTrigger = button;
-    trackEvent('sponsor_pilot_modal_opened', { source: getAttribution().source });
+    const location = button.dataset.ctaLocation;
+    const { source } = getAttribution();
+    const eventName = button.dataset.ctaPriority === 'primary'
+      ? 'sponsor_primary_cta_clicked'
+      : 'sponsor_secondary_cta_clicked';
+    trackEvent(eventName, { location, source });
+    if (!contactStarted) {
+      contactStarted = true;
+      trackEvent('sponsor_contact_started', { location, source });
+    }
     modal.showModal();
     requestAnimationFrame(() => form.elements.email.focus());
   });
@@ -65,6 +48,13 @@ modal.addEventListener('close', () => activeTrigger?.focus());
 
 form.addEventListener('input', () => {
   submitError.textContent = '';
+  if (!formStarted) {
+    formStarted = true;
+    trackEvent('sponsor_form_started', {
+      focus_type: form.elements.focus.value,
+      source: getAttribution().source,
+    });
+  }
 });
 
 form.addEventListener('submit', async (event) => {
@@ -80,7 +70,7 @@ form.addEventListener('submit', async (event) => {
   const company = form.elements.company.value.trim();
   const focusType = form.elements.focus.value;
   const attribution = getAttribution();
-  trackEvent('sponsor_pilot_submitted', { source: attribution.source, focus_type: focusType });
+  trackEvent('sponsor_form_submitted', { focus_type: focusType, ...attribution });
 
   try {
     if (!supabase) throw new Error('Supabase public environment variables are not configured.');
@@ -94,9 +84,10 @@ form.addEventListener('submit', async (event) => {
     const isDuplicate = error?.code === '23505';
     if (error && !isDuplicate) throw error;
 
-    trackEvent(isDuplicate ? 'sponsor_pilot_duplicate' : 'sponsor_pilot_success', {
+    trackEvent('sponsor_form_success', {
       source: attribution.source,
       focus_type: focusType,
+      duplicate: isDuplicate,
     });
     successTitle.textContent = isDuplicate ? 'Request already received.' : 'Request received.';
     form.hidden = true;
@@ -104,6 +95,7 @@ form.addEventListener('submit', async (event) => {
     requestAnimationFrame(() => success.focus());
   } catch (error) {
     console.error('Offscreen sponsor-pilot submission failed.', { code: error?.code, message: error?.message });
+    trackEvent('sponsor_form_error', { source: attribution.source, focus_type: focusType });
     submitError.textContent = 'Couldn’t send your request right now. Please try again.';
   } finally {
     isSubmitting = false;

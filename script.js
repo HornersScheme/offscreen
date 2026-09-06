@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { getAttribution, trackEvent } from './analytics.js';
 
 const modal = document.querySelector('.join-modal');
 const form = document.querySelector('#early-access-form');
@@ -28,37 +29,6 @@ let activeTrigger = null;
 let submittedEmail = '';
 let isSubmitting = false;
 let isSubmittingAlpha = false;
-
-function trackEvent(name, properties = {}) {
-  window.dispatchEvent(new CustomEvent('offscreen:analytics', { detail: { name, properties } }));
-  console.debug(`[Offscreen event] ${name}`, properties);
-}
-
-function normalizeAttributionValue(value) {
-  return value?.trim().toLowerCase().slice(0, 100) || null;
-}
-
-function getAttribution() {
-  const params = new URLSearchParams(window.location.search);
-  let source = normalizeAttributionValue(params.get('utm_source'));
-
-  if (!source && document.referrer) {
-    try {
-      const referrer = new URL(document.referrer);
-      source = referrer.hostname === window.location.hostname
-        ? 'direct'
-        : referrer.hostname.replace(/^www\./, '').slice(0, 100);
-    } catch {
-      source = 'direct';
-    }
-  }
-
-  return {
-    source: source || 'direct',
-    utm_medium: normalizeAttributionValue(params.get('utm_medium')),
-    utm_campaign: normalizeAttributionValue(params.get('utm_campaign')),
-  };
-}
 
 function selectedCategory() {
   return categoryInputs.find((input) => input.checked)?.value || '';
@@ -95,6 +65,7 @@ document.querySelectorAll('[data-open-modal]').forEach((button) => {
   button.addEventListener('click', (event) => {
     event.preventDefault();
     activeTrigger = button;
+    trackEvent('cta_clicked', { cta: 'join_early_access', location: button.dataset.ctaLocation });
     trackEvent('early_access_modal_opened', { source: getAttribution().source });
     modal.showModal();
     requestAnimationFrame(() => emailInput.focus());
@@ -120,6 +91,7 @@ categoryInputs.forEach((input) => input.addEventListener('change', () => {
   categoryError.textContent = '';
   document.querySelector('.focus-fieldset').setAttribute('aria-invalid', 'false');
   submitError.textContent = '';
+  trackEvent('early_access_focus_selected', { focus_category: input.value });
   updateSubmitState();
 }));
 
@@ -136,7 +108,7 @@ form.addEventListener('submit', async (event) => {
   submitError.textContent = '';
   submittedEmail = emailInput.value.trim().toLowerCase();
   const attribution = getAttribution();
-  trackEvent('early_access_submitted', { source: attribution.source, focus_category: selectedCategory() });
+  trackEvent('early_access_submitted', { focus_category: selectedCategory(), ...attribution });
 
   try {
     if (!supabase) throw new Error('Supabase public environment variables are not configured.');
@@ -193,6 +165,12 @@ alphaButton.addEventListener('click', async () => {
 });
 
 alphaLaterButton.addEventListener('click', () => modal.close());
+
+document.querySelectorAll('[data-sponsor-link]').forEach((link) => {
+  link.addEventListener('click', () => {
+    trackEvent('cta_clicked', { cta: 'explore_sponsorship', location: link.dataset.ctaLocation });
+  });
+});
 
 const focusButton = document.querySelector('[data-focus-demo]');
 const timer = document.querySelector('[data-session-timer]');
