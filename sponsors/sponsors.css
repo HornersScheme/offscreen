@@ -123,7 +123,9 @@
 #pilot-form input,#pilot-form select { width:100%; padding:15px; color:#fff; background:#0b0b0c; border:1px solid #3a3a3b; border-radius:12px; }
 #pilot-form select { appearance:auto; }
 #pilot-form button { margin-top:10px; padding:16px; border:0; border-radius:13px; background:var(--lime); color:#050505; font-weight:750; cursor:pointer; }
+#pilot-form button:disabled { cursor:wait; opacity:.66; }
 #pilot-form small { color:#62625f; text-align:center; }
+.pilot-form-error { min-height:18px; margin:2px 0 0; color:#ff9a9a; font-size:12px; text-align:center; }
 .pilot-success { padding:30px 0 8px; text-align:center; }
 .pilot-success>span { width:52px; height:52px; margin:auto; display:grid; place-items:center; border-radius:50%; background:var(--lime); color:#050505; font-weight:900; }
 .pilot-success h3 { margin:20px 0 6px; font-size:26px; }

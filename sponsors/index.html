@@ -177,15 +177,16 @@
       <p>Tell us a little about your company and the kind of focus you want to support.</p>
       <form id="pilot-form">
         <label for="work-email">Work email</label>
-        <input id="work-email" name="email" type="email" placeholder="you@company.com" autocomplete="email" required />
+        <input id="work-email" name="email" type="email" placeholder="you@company.com" autocomplete="email" maxlength="254" required />
         <label for="company">Company</label>
-        <input id="company" name="company" type="text" placeholder="Company name" autocomplete="organization" required />
+        <input id="company" name="company" type="text" placeholder="Company name" autocomplete="organization" maxlength="200" required />
         <label for="focus-type">What would you like to sponsor?</label>
-        <select id="focus-type" name="focus"><option>Coding</option><option>Studying</option><option>Writing</option><option>Focused work</option></select>
+        <select id="focus-type" name="focus"><option value="coding">Coding</option><option value="studying">Studying</option><option value="writing">Writing</option><option value="focused_work">Focused work</option></select>
         <button type="submit">Request a founding pilot</button>
+        <p class="pilot-form-error" role="alert" data-pilot-error></p>
         <small>No commitment. We'll reach out to explore fit.</small>
       </form>
-      <div class="pilot-success" hidden><span>✓</span><h3>Request received.</h3><p>We'll be in touch to discuss a founding pilot.</p></div>
+      <div class="pilot-success" tabindex="-1" hidden><span>✓</span><h3>Request received.</h3><p>We'll be in touch to discuss a founding pilot.</p></div>
     </dialog>
 
     <script type="module" src="/sponsors/sponsors.js"></script>
