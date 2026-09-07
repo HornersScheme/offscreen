@@ -4,7 +4,6 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
   let email = '';
-
   try {
     const body = await request.json() as { email?: unknown };
     email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
@@ -18,17 +17,13 @@ export async function POST(request: Request) {
 
   try {
     const supabase = await createClient();
-    await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${new URL(request.url).origin}/auth/callback`,
-        shouldCreateUser: false,
-      },
+    await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${new URL(request.url).origin}/auth/callback?next=/account/password`,
     });
 
-    // Return the same result whether or not the email is registered to prevent account enumeration.
-    return Response.json({ message: 'If this email is authorized, a sign-in link is on its way.' });
+    // Always return the same response so registered sponsor emails are not disclosed.
+    return Response.json({ message: 'If this email is authorized, a reset link is on its way.' });
   } catch {
-    return Response.json({ message: 'Sign-in is temporarily unavailable. Please try again.' }, { status: 503 });
+    return Response.json({ message: 'Password recovery is temporarily unavailable.' }, { status: 503 });
   }
 }

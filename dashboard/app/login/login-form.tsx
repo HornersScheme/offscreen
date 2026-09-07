@@ -14,14 +14,22 @@ export function LoginForm({ initialMessage = '' }: { initialMessage?: string }) 
 
     const form = new FormData(event.currentTarget);
     try {
-      const response = await fetch('/auth/magic-link', {
+      const response = await fetch('/auth/password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.get('email') }),
+        body: JSON.stringify({
+          email: form.get('email'),
+          password: form.get('password'),
+        }),
       });
       const result = await response.json() as { message?: string };
-      setIsError(!response.ok);
-      setMessage(result.message || (response.ok ? 'Check your inbox for a secure sign-in link.' : 'Unable to send a sign-in link.'));
+      if (response.ok) {
+        window.location.assign('/dashboard?signed_in=1');
+        return;
+      }
+
+      setIsError(true);
+      setMessage(result.message || 'Email or password is incorrect.');
     } catch {
       setIsError(true);
       setMessage('Sign-in is temporarily unavailable. Please try again.');
@@ -34,7 +42,10 @@ export function LoginForm({ initialMessage = '' }: { initialMessage?: string }) 
     <form className="login-form" onSubmit={submit}>
       <label className="sr-only" htmlFor="email">Sponsor email</label>
       <input id="email" name="email" type="email" autoComplete="email" placeholder="you@company.com" maxLength={254} required />
-      <button type="submit" disabled={pending}>{pending ? 'Sending…' : 'Send sign-in link'}</button>
+      <label className="sr-only" htmlFor="password">Password</label>
+      <input id="password" name="password" type="password" autoComplete="current-password" placeholder="Password" minLength={8} maxLength={128} required />
+      <button type="submit" disabled={pending}>{pending ? 'Signing in…' : 'Sign in'}</button>
+      <a className="login-help" href="/forgot-password">Forgot password?</a>
       <p className="form-message" role="status" data-error={isError}>{message}</p>
     </form>
   );

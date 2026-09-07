@@ -8,7 +8,10 @@ function ShellHeader({ label }: { label: string }) {
   return (
     <header className="dashboard-header">
       <a className="wordmark" href="https://offscreenapp.com"><span className="wordmark-mark" aria-hidden="true" />Offscreen <span className="wordmark-section">/ Sponsors</span></a>
-      <form action="/auth/signout" method="post"><button className="logout-button" type="submit">Log out</button></form>
+      <div className="header-account">
+        <a href="/account/password">Password</a>
+        <form action="/auth/signout" method="post"><button className="logout-button" type="submit">Log out</button></form>
+      </div>
       <span className="sr-only">{label}</span>
     </header>
   );

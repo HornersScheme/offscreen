@@ -30,12 +30,14 @@ h1, h2, p { margin-top: 0; }
 .eyebrow { margin: 0 0 24px; color: var(--muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
 .login-main h1 { max-width: 560px; margin: 0; font-size: clamp(3.5rem, 9vw, 7rem); line-height: 0.88; letter-spacing: -0.075em; }
 .login-copy { max-width: 420px; margin: 28px 0 36px; color: #b8b8b1; font-size: 1.08rem; line-height: 1.55; }
-.login-form { display: grid; grid-template-columns: 1fr auto; gap: 10px; max-width: 560px; }
+.login-form { display: grid; gap: 10px; max-width: 560px; }
 .login-form input { min-width: 0; padding: 17px 18px; color: var(--paper); background: transparent; border: 1px solid #44453f; border-radius: 4px; outline: none; }
 .login-form input:focus { border-color: var(--acid); box-shadow: 0 0 0 3px rgba(215, 255, 99, 0.12); }
 .login-form button { padding: 17px 22px; border: 1px solid var(--acid); border-radius: 4px; background: var(--acid); color: var(--ink); font-weight: 800; cursor: pointer; }
 .login-form button:disabled { opacity: 0.6; cursor: wait; }
-.form-message { grid-column: 1 / -1; min-height: 22px; margin: 4px 0 0; color: #b8b8b1; font-size: 0.9rem; }
+.login-help { justify-self: start; color: #9b9c95; font-size: .86rem; }
+.login-help:hover { color: var(--paper); }
+.form-message { min-height: 22px; margin: 4px 0 0; color: #b8b8b1; font-size: 0.9rem; }
 .form-message[data-error='true'] { color: var(--danger); }
 .login-footer { padding-top: 20px; border-top: 1px solid var(--line); color: #777872; font-size: 0.8rem; }
 
@@ -58,15 +60,23 @@ h1, h2, p { margin-top: 0; }
 .wordmark-section { color: #74756f; font-weight: 500; letter-spacing: 0; text-transform: none; }
 .header-account { display: flex; align-items: center; gap: 20px; color: #a5a69e; font-size: 0.86rem; }
 .header-account form, .dashboard-header form { margin: 0; }
-.header-account button, .logout-button {
+.header-account a, .header-account button, .logout-button {
   padding: 0;
   color: #a5a69e;
   background: transparent;
   border: 0;
   border-bottom: 1px solid #565750;
   cursor: pointer;
+  text-decoration: none;
 }
-.header-account button:hover, .logout-button:hover { color: var(--paper); border-color: var(--paper); }
+.header-account a:hover, .header-account button:hover, .logout-button:hover { color: var(--paper); border-color: var(--paper); }
+
+.account-form { display: grid; gap: 10px; max-width: 480px; margin-top: 38px; }
+.account-form input { min-width: 0; padding: 17px 18px; color: var(--paper); background: transparent; border: 1px solid #44453f; border-radius: 4px; outline: none; }
+.account-form input:focus { border-color: var(--acid); box-shadow: 0 0 0 3px rgba(215, 255, 99, 0.12); }
+.account-form button { padding: 17px 22px; color: var(--ink); background: var(--acid); border: 1px solid var(--acid); border-radius: 4px; font-weight: 800; cursor: pointer; }
+.account-form button:disabled { opacity: .6; cursor: wait; }
+.account-back { color: #a5a69e; }
 
 .campaign-intro {
   display: grid;

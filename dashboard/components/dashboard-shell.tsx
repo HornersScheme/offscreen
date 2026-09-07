@@ -61,6 +61,7 @@ export function DashboardShell({ sponsor, campaigns, campaign, metrics, signedIn
         </a>
         <div className="header-account">
           <span>{sponsor.name}</span>
+          <a href="/account/password">Password</a>
           <form action="/auth/signout" method="post"><button type="submit">Log out</button></form>
         </div>
       </header>

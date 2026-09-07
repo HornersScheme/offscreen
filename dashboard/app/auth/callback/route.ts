@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code');
+  const next = request.nextUrl.searchParams.get('next');
   const destination = request.nextUrl.clone();
   destination.search = '';
 
@@ -11,8 +12,8 @@ export async function GET(request: NextRequest) {
       const supabase = await createClient();
       const { error } = await supabase.auth.exchangeCodeForSession(code);
       if (!error) {
-        destination.pathname = '/dashboard';
-        destination.searchParams.set('signed_in', '1');
+        destination.pathname = next === '/account/password' ? next : '/dashboard';
+        if (destination.pathname === '/dashboard') destination.searchParams.set('signed_in', '1');
         return NextResponse.redirect(destination);
       }
     } catch {
