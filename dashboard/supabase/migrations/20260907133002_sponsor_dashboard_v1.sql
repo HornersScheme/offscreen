@@ -212,14 +212,18 @@ set search_path = ''
 as $$
 declare
   result jsonb;
+  is_authorized boolean := false;
 begin
-  if (select auth.uid()) is null or not exists (
+  select exists (
     select 1
     from public.campaigns c
     join public.sponsor_members sm on sm.sponsor_id = c.sponsor_id
     where c.id = p_campaign_id
       and sm.user_id = (select auth.uid())
-  ) then
+      and (select auth.uid()) is not null
+  ) into is_authorized;
+
+  if not is_authorized then
     raise exception 'Campaign unavailable' using errcode = '42501';
   end if;
 
