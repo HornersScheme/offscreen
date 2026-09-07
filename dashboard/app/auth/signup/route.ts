@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { authErrorResult, logAuthError } from '@/lib/supabase/auth-errors';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -33,7 +34,9 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      return Response.json({ message: 'Unable to create an account. Try signing in or resetting your password.' }, { status: 400 });
+      logAuthError('signup', error);
+      const result = authErrorResult(error, 'signup');
+      return Response.json({ message: result.message }, { status: result.status });
     }
 
     if (data.session) {

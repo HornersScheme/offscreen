@@ -47,7 +47,7 @@ export function LoginForm({ initialMessage = '' }: { initialMessage?: string }) 
       <button type="submit" disabled={pending}>{pending ? 'Signing in…' : 'Sign in'}</button>
       <a className="login-help" href="/forgot-password">Forgot password?</a>
       <p className="form-message" role="status" data-error={isError}>{message}</p>
-      <p className="login-secondary">New sponsor? <a href="/signup">Create an account</a></p>
+      <p className="login-secondary">New sponsor? <a href="/signup">Create an account</a> · <a href="/resend-confirmation">Resend confirmation</a></p>
     </form>
   );
 }

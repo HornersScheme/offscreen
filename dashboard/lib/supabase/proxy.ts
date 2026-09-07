@@ -22,7 +22,7 @@ export async function updateSession(request: NextRequest) {
     const { data } = await supabase.auth.getClaims();
     const signedIn = Boolean(data?.claims?.sub);
     const onDashboard = request.nextUrl.pathname.startsWith('/dashboard');
-    const onAuthPage = ['/login', '/signup', '/forgot-password'].includes(request.nextUrl.pathname);
+    const onAuthPage = ['/login', '/signup', '/forgot-password', '/resend-confirmation'].includes(request.nextUrl.pathname);
 
     if (!signedIn && onDashboard) {
       return NextResponse.redirect(new URL('/login', request.url));

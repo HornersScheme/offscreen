@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { authErrorResult, logAuthError } from '@/lib/supabase/auth-errors';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -23,8 +24,9 @@ export async function POST(request: Request) {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      // Keep authentication errors generic so the endpoint does not reveal registered emails.
-      return Response.json({ message: 'Email or password is incorrect.' }, { status: 401 });
+      logAuthError('signin', error);
+      const result = authErrorResult(error, 'signin');
+      return Response.json({ message: result.message }, { status: result.status });
     }
 
     return Response.json({ message: 'Signed in.' });

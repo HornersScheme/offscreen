@@ -60,7 +60,7 @@ export function SignupForm() {
       <input id="confirmation" name="confirmation" type="password" autoComplete="new-password" placeholder="Confirm password" minLength={8} maxLength={128} required />
       <button type="submit" disabled={pending}>{pending ? 'Creating account…' : 'Create account'}</button>
       <p className="form-message" role="status" data-error={isError}>{message}</p>
-      <p className="login-secondary">Already have an account? <a href="/login">Sign in</a></p>
+      <p className="login-secondary">Already have an account? <a href="/login">Sign in</a> · <a href="/resend-confirmation">Resend confirmation</a></p>
     </form>
   );
 }

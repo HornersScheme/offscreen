@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { authErrorResult, logAuthError } from '@/lib/supabase/auth-errors';
 
 export async function POST(request: Request) {
   const origin = request.headers.get('origin');
@@ -27,7 +28,9 @@ export async function POST(request: Request) {
 
     const { error } = await supabase.auth.updateUser({ password });
     if (error) {
-      return Response.json({ message: 'Unable to save that password.' }, { status: 400 });
+      logAuthError('password', error);
+      const result = authErrorResult(error, 'password');
+      return Response.json({ message: result.message }, { status: result.status });
     }
 
     return Response.json({ message: 'Password saved. You can now use it to sign in.' });

@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
         if (destination.pathname === '/dashboard') destination.searchParams.set('signed_in', '1');
         return NextResponse.redirect(destination);
       }
+      console.error('[auth/callback] Supabase Auth error', { code: error.code || 'unknown', status: error.status });
     } catch {
       // Fall through to the generic expired-link state.
     }
