@@ -5,7 +5,7 @@ V1 reporting app for Offscreen pilot sponsors. It is a separate Next.js applicat
 ## Architecture
 
 - Next.js 16 App Router and TypeScript
-- Supabase Auth with email/password sign-in and password recovery
+- Supabase Auth with email/password signup, sign-in, and password recovery
 - Supabase Postgres with RLS for sponsor isolation
 - Server-rendered campaign reporting through a membership-checked database RPC
 - Optional, production-only Umami analytics with event names only—no sponsor email, campaign ID, or Offscreen user data
@@ -87,7 +87,7 @@ Sponsor A versus sponsor B access is enforced by both campaign RLS and the RPC m
 
 ## Manual sponsor onboarding
 
-1. In Supabase Authentication, create the sponsor's email user and set a password. The dashboard has no public sign-up flow, so only pre-existing users can sign in. Existing invited users can establish a password through the protected password page or the password-recovery flow.
+1. Ask the sponsor to create an account from the dashboard signup page, or create/invite the user from Supabase Authentication. Signup creates only an Auth user; it never grants sponsor or campaign access.
 2. Create the sponsor and keep its returned ID:
 
    ```sql

@@ -37,6 +37,8 @@ h1, h2, p { margin-top: 0; }
 .login-form button:disabled { opacity: 0.6; cursor: wait; }
 .login-help { justify-self: start; color: #9b9c95; font-size: .86rem; }
 .login-help:hover { color: var(--paper); }
+.login-secondary { margin: 6px 0 0; color: #777872; font-size: .9rem; }
+.login-secondary a { color: var(--paper); }
 .form-message { min-height: 22px; margin: 4px 0 0; color: #b8b8b1; font-size: 0.9rem; }
 .form-message[data-error='true'] { color: var(--danger); }
 .login-footer { padding-top: 20px; border-top: 1px solid var(--line); color: #777872; font-size: 0.8rem; }
